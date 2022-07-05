@@ -43,7 +43,38 @@ namespace CoffeeShop.Repositories
 
         public List<Coffee> GetAllCoffee()
         {
-            throw new System.NotImplementedException();
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT Coffee.Id, Coffee.Title, Coffee.BeanVarietyId, BeanVariety.[Name], BeanVariety.Region,
+		                                        BeanVariety.Notes
+                                        FROM Coffee
+                                        JOIN BeanVariety ON BeanVariety.Id = BeanVarietyId";
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        List<Coffee> coffeeList = new List<Coffee>();
+                        while (reader.Read())
+                        {
+                            coffeeList.Add(new Coffee()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                BeanVarietyId = reader.GetInt32(reader.GetOrdinal("BeanVarietyId")),
+                                BeanVariety = new BeanVariety()
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("BeanVarietyId")),
+                                    Region = reader.GetString(reader.GetOrdinal("Region")),
+                                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                                    Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ? null : reader.GetString(reader.GetOrdinal("Notes"))
+                                }
+                            });
+                        }
+                        return coffeeList;
+                    }
+                }
+            }
         }
 
         public Coffee GetCoffee(int id)

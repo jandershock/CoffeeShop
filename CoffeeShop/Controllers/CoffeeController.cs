@@ -32,5 +32,11 @@ namespace CoffeeShop.Controllers
             }
             return Ok(lookup);
         }
+
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok(_coffeeRepository.GetAllCoffee());
+        }
     }
 }
