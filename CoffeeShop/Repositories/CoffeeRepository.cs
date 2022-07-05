@@ -38,7 +38,20 @@ namespace CoffeeShop.Repositories
 
         public void DeleteCoffee(int id)
         {
-            throw new System.NotImplementedException();
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE
+                                        FROM Coffee
+                                        WHERE Coffee.Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         public List<Coffee> GetAllCoffee()
