@@ -38,5 +38,16 @@ namespace CoffeeShop.Controllers
         {
             return Ok(_coffeeRepository.GetAllCoffee());
         }
+
+        [HttpPut("id")]
+        public IActionResult SomethingRandom(int id, Coffee coffee)
+        {
+            if (id != coffee.Id)
+            {
+                return BadRequest();
+            }
+            _coffeeRepository.UpdateCoffee(coffee);
+            return NoContent();
+        }
     }
 }
